@@ -38,7 +38,10 @@ public class AvatarBehaviour : MonoBehaviour
         {
             AvatarRBMove();
         }
-        _animator.SetInteger("Velocity", (int)_rigidBody.velocity.magnitude);
+        else if (_photonView.IsMine)
+        {
+            _animator.SetInteger("Velocity", 0);
+        }
 
     }
 
@@ -55,11 +58,13 @@ public class AvatarBehaviour : MonoBehaviour
     private void AvatarRBMove()
     {
         avatarDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxis("Vertical")).normalized;
-        if (_rigidBody.velocity.magnitude > 0 )
+        if (avatarDirection.magnitude > 0 )
         {
             avatarRotation = Quaternion.LookRotation(avatarDirection);
         }
         _rigidBody.Move(_rigidBody.position +  m_speed * Time.fixedDeltaTime * avatarDirection, Quaternion.Euler(0, avatarRotation.eulerAngles.y, 0));
+        _animator.SetInteger("Velocity", (int)avatarDirection.magnitude);
+
     }
 
     #endregion
