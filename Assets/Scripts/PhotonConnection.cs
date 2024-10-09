@@ -45,6 +45,7 @@ public class PhotonConnection : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         print("Entro a Room: " + PhotonNetwork.CurrentRoom.Name);
+        PhotonNetwork.LoadLevel("AvatarTest");
         //PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
     }
 
@@ -63,7 +64,7 @@ public class PhotonConnection : MonoBehaviourPunCallbacks
     RoomOptions newRoomInfo()
     {
         RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = 6;
+        roomOptions.MaxPlayers = 5;
         roomOptions.IsOpen = true;
         roomOptions.IsVisible = true;
 
@@ -95,7 +96,6 @@ public class PhotonConnection : MonoBehaviourPunCallbacks
         if(PhotonNetwork.NickName != "")
         {
             PhotonNetwork.JoinOrCreateRoom("TestRoom", newRoomInfo(), null);
-            PhotonNetwork.LoadLevel("AvatarTest");
         }
     }
 
