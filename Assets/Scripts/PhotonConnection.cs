@@ -4,10 +4,23 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
-using UnityEngine.UIElements;
 
 public class PhotonConnection : MonoBehaviourPunCallbacks
 {
+
+    #region References
+    [Header("Button References")]
+    [SerializeField] TMP_InputField inputField;
+    [SerializeField] GameObject okButton;
+    [SerializeField] GameObject playerNameText;
+
+    [Header("Loading Panel References")]
+    [SerializeField] GameObject loadingPanel;
+    [SerializeField] GameObject ghostyObject;
+    [SerializeField] Animator panelAnimator;
+    [SerializeField] AnimationClip outClip;
+
+    #endregion
 
     void Start()
     {
@@ -22,9 +35,11 @@ public class PhotonConnection : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
-        print("Ha entrado al lobby Ab");
         PhotonNetwork.NickName = "";
-        PhotonNetwork.JoinOrCreateRoom("TestRoom", newRoomInfo(), null);
+        print("Ha entrado al lobby Ab");
+        panelAnimator.SetBool("PanelOut", true);
+        Invoke("LoadingPanelsSet", outClip.length);
+        //PhotonNetwork.JoinOrCreateRoom("TestRoom", newRoomInfo(), null);
     }
 
     public override void OnJoinedRoom()
@@ -55,4 +70,37 @@ public class PhotonConnection : MonoBehaviourPunCallbacks
         return roomOptions;
     }
 
+    public void LoadingPanelsSet()
+    {
+        loadingPanel.gameObject.SetActive(false);
+        ghostyObject.SetActive(true);
+    }
+
+    public void OnClickOkButton()
+    {
+        if (inputField.text != "")
+        {
+            PhotonNetwork.NickName = inputField.text;
+        }
+        else
+        {
+            inputField.gameObject.SetActive(true);
+            okButton.gameObject.SetActive(true);
+            playerNameText.gameObject.SetActive(false);
+        }
+    }
+
+    public void OnClickPlayButton()
+    {
+        if(PhotonNetwork.NickName != "")
+        {
+            PhotonNetwork.JoinOrCreateRoom("TestRoom", newRoomInfo(), null);
+            PhotonNetwork.LoadLevel("AvatarTest");
+        }
+    }
+
+    public void OnClickQuitButton()
+    {
+        Application.Quit();
+    }
 }
