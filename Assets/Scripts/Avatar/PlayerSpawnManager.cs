@@ -11,9 +11,11 @@ public class PlayerSpawnManager : MonoBehaviour
 
     PhotonView myPV;
 
+    Transform spawnTransform;
+    [SerializeField] Transform playersParentGameObject;
+
     [SerializeField] Transform[] spawnPositions;
 
-    Transform spawnTransform;
 
     #region Unity Methods
 
@@ -31,14 +33,9 @@ public class PlayerSpawnManager : MonoBehaviour
 
     private void Start()
     {
-        switch (LevelNetworkManager.Instance?.getCurrentPlayerCount)
+        if (LevelNetworkManager.Instance?.getCurrentPlayerCount > 0)
         {
-            case 1:
-                spawnTransform = spawnPositions[0];
-                break;
-            case 2:
-                spawnTransform = spawnPositions[1];
-                break;
+            spawnTransform = spawnPositions[(int)LevelNetworkManager.Instance?.getCurrentPlayerCount - 1];
         }
         if(LevelNetworkManager.Instance == null)
         {
@@ -46,6 +43,7 @@ public class PlayerSpawnManager : MonoBehaviour
         }
         GameObject playerInstance = PhotonNetwork.Instantiate("Avatar", spawnTransform.position, Quaternion.identity);
         playerInstance.GetComponentInChildren<TextMeshProUGUI>().text = PhotonNetwork.NickName;
+        playerInstance.transform.parent = playersParentGameObject.transform;
     }
 
     #endregion

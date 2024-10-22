@@ -18,9 +18,9 @@ public class AvatarBehaviour : MonoBehaviour
 
     #region References
     [Header("Avatar Component References")]
-    [SerializeField] protected Rigidbody _rigidBody;
-    [SerializeField] protected PhotonView _photonView;
-    [SerializeField] protected Animator _animator;
+    [SerializeField, HideInInspector] protected Rigidbody _rigidBody;
+    [SerializeField, HideInInspector] protected PhotonView _photonView;
+    [SerializeField, HideInInspector] protected Animator _animator;
 
     #endregion
 
@@ -63,7 +63,7 @@ public class AvatarBehaviour : MonoBehaviour
 
     #endregion
 
-    #region Private Methods
+    #region Local Methods
 
     private void InitializeAvatar()
     {
