@@ -21,19 +21,33 @@ namespace Dante.TTTGame
 
     public class TTTGameManager : GeneralGameManager
     {
+
+
         #region References
 
 
 
         #endregion
 
-        #region Unity Methods
+        #region Runtime Variables
 
-
+        protected TTTGameStates _TTTgameState;
 
         #endregion
 
+        #region Unity Methods
 
+        private void FixedUpdate()
+        {
+            switch (_TTTgameState)
+            {
+                case TTTGameStates.Sorting_Roles:
+                    ManageSortingRolesState();
+                    break;
+            }
+        }
+
+        #endregion
 
         #region Local Methods
 
@@ -42,7 +56,7 @@ namespace Dante.TTTGame
         #region Sorting Roles
         protected void InitializeSortingRolesState()
         {
-
+            
         }
 
         protected void ManageSortingRolesState() 
