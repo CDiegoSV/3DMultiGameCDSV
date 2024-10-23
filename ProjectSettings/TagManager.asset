@@ -5,14 +5,15 @@ TagManager:
   serializedVersion: 2
   tags:
   - Bullet
+  - Agent
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Floor
   - Water
   - UI
-  - 
+  - Walls
   - 
   - 
   - 
