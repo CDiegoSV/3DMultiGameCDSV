@@ -20,9 +20,10 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
 
     #region References
     [Header("Avatar Component References")]
-    [SerializeField, HideInInspector] protected Rigidbody _rigidBody;
-    [SerializeField, HideInInspector] protected PhotonView _photonView;
-    [SerializeField, HideInInspector] protected Animator _animator;
+    [SerializeField] protected Rigidbody _rigidBody;
+    [SerializeField] protected PhotonView _photonView;
+    [SerializeField] protected Animator _animator;
+    [SerializeField] protected AnimationClip _deathClip;
     protected Cinemachine.CinemachineFreeLook _cam;
 
     #endregion
@@ -59,17 +60,25 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
         {
             AvatarRBMove();
         }
-        if(m_life == 0)
+        if (m_life == 0)
         {
-            print("A");
+            _photonView.RPC("OnLifein0", RpcTarget.AllBuffered);
+            print(gameObject.name + " desvivido.");
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.tag == "Agent" && Input.GetKeyDown(KeyCode.Mouse0))
+        if (other.CompareTag("Player") && Input.GetKeyDown(KeyCode.Mouse0))
         {
-            DamageOtherPlayer(other.GetComponent<PhotonView>().Owner);
+            if (other.GetComponent<AvatarBehaviour>() != null)
+            {
+                DamageOtherPlayer(other.GetComponent<AvatarBehaviour>());
+            }
+            else
+            {
+                DamageOtherPlayer(other.GetComponent<NPCBehaviour>());
+            }
         }
     }
 
@@ -77,14 +86,11 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
 
     #region Public Methods
 
-    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    public virtual void GettingDamage()
     {
-        if(changedProps.ContainsKey("damage"))
-        {
-            m_life -= (int)changedProps["damage"];
-        }
+        m_life--;
     }
-
+   
     #endregion
 
     #region Local Methods
@@ -95,7 +101,7 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
         {
             gameObject.GetComponentInChildren<TextMeshProUGUI>().text = _photonView.Owner.NickName;
         }
-        else
+        if(_photonView.IsMine) 
         {
             m_life = 1;
             _cam = GameObject.FindFirstObjectByType<Cinemachine.CinemachineFreeLook>();
@@ -113,18 +119,27 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
         _rigidBody.Move(_rigidBody.position +  m_speed * Time.fixedDeltaTime * avatarDirection, Quaternion.Euler(0, avatarRotation.eulerAngles.y, 0));
     }
 
-
-    private void DamageOtherPlayer(Player p_otherPlayer)
+    private void DamageOtherPlayer(AvatarBehaviour otherPlayer)
     {
-        if(PhotonNetwork.IsMasterClient)
+        if (_photonView.IsMine)
         {
-            Hashtable playerStats = new Hashtable();
-
-            playerStats["damage"] = 1;
-            p_otherPlayer.SetCustomProperties(playerStats);
+            otherPlayer.GettingDamage();
         }
     }
 
+    [PunRPC]
+    protected virtual void OnLifein0()
+    {
+        m_life--;
+        _animator.SetTrigger("Death");
+        StartCoroutine(DeathCorutine());
+    }
+
+    protected virtual IEnumerator DeathCorutine()
+    {
+        yield return new WaitForSeconds(_deathClip.length);
+        PhotonNetwork.Destroy(gameObject);
+    }
 
     #endregion
 }
