@@ -73,11 +73,11 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
         {
             if (other.GetComponent<AvatarBehaviour>() != null)
             {
-                DamageOtherPlayer(other.GetComponent<AvatarBehaviour>());
+                DamageOtherPlayer(other.gameObject.GetComponent<AvatarBehaviour>());
             }
             else
             {
-                DamageOtherPlayer(other.GetComponent<NPCBehaviour>());
+                DamageOtherPlayer(other.gameObject.GetComponent<NPCBehaviour>());
             }
         }
     }
