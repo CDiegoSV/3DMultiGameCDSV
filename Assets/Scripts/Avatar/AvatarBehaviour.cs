@@ -25,6 +25,9 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
     [SerializeField] protected Animator _animator;
     [SerializeField] protected AnimationClip _deathClip;
     protected Cinemachine.CinemachineFreeLook _cam;
+    [SerializeField] protected ParticleSystem _particleSystem;
+    //[SerializeField] protected GameObject _hitCollider;
+
 
     #endregion
 
@@ -33,7 +36,7 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
     protected Vector3 avatarDirection;
     protected Quaternion avatarRotation;
 
-    protected int m_life;
+    [SerializeField] protected int m_life;
 
     #endregion
 
@@ -63,23 +66,19 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
         if (m_life == 0)
         {
             _photonView.RPC("OnLifein0", RpcTarget.AllBuffered);
+            //OnLifein0();
             print(gameObject.name + " desvivido.");
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player") && Input.GetKeyDown(KeyCode.Mouse0))
+        if (_photonView.IsMine && (other.CompareTag("Agent") || other.CompareTag("Player") ) && Input.GetKeyDown(KeyCode.Mouse0))
         {
-            if (other.GetComponent<AvatarBehaviour>() != null)
-            {
-                DamageOtherPlayer(other.gameObject.GetComponent<AvatarBehaviour>());
-            }
-            else
-            {
-                DamageOtherPlayer(other.gameObject.GetComponent<NPCBehaviour>());
-            }
+            Debug.Log("Kill Agent Input Detection");
+            other.gameObject.GetComponent<AvatarBehaviour>().GettingDamage();
         }
+        
     }
 
     #endregion
@@ -99,7 +98,7 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
     {
         if (!_photonView.IsMine)
         {
-            gameObject.GetComponentInChildren<TextMeshProUGUI>().text = _photonView.Owner.NickName;
+            //gameObject.GetComponentInChildren<TextMeshProUGUI>().text = _photonView.Owner.NickName;
         }
         if(_photonView.IsMine) 
         {
@@ -137,8 +136,10 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
 
     protected virtual IEnumerator DeathCorutine()
     {
+        _particleSystem.Play();
+        Debug.Log("Inside Coroutine, animator called");
         yield return new WaitForSeconds(_deathClip.length);
-        PhotonNetwork.Destroy(gameObject);
+        Destroy(gameObject);
     }
 
     #endregion

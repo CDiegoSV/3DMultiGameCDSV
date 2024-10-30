@@ -29,27 +29,38 @@ public class NPCBehaviour : AvatarBehaviour
         _photonView = GetComponent<PhotonView>();
         _animator = GetComponentInChildren<Animator>();
         _animator.SetInteger("Velocity", 1);
-        
+        m_life += 1;
     }
 
     private void FixedUpdate()
     {
-        if(!m_agent.pathPending && m_agent.remainingDistance < 0.3f)
-        {
-            MoveToRandomPosition();
-
-        }
         if (m_life == 0)
         {
+            Debug.Log("Muertoo");
             _photonView.RPC("OnLifein0", RpcTarget.AllBuffered);
+            //OnLifein0();
         }
+        //if (!m_agent.pathPending && m_agent.remainingDistance < 0.3f)
+        //{
+        //    MoveToRandomPosition();
+
+        //}
+
     }
+
 
     #endregion
 
     public override void GettingDamage()
     {
-        base.GettingDamage();
+        if (m_life >= 0)
+        {
+            m_life--;
+        }
+        else
+        {
+            Debug.Log("Ya se murió");
+        }
     }
 
     #region Local Methods
@@ -68,14 +79,21 @@ public class NPCBehaviour : AvatarBehaviour
         }
     }
 
+    [PunRPC]
     protected override void OnLifein0()
     {
-        base.OnLifein0();
+        m_life--;
+        _animator.SetTrigger("Death");
+        StartCoroutine(DeathCorutine());
     }
+
 
     protected override IEnumerator DeathCorutine()
     {
-        return base.DeathCorutine();
+        _particleSystem.Play();
+        Debug.Log("Inside Coroutine, animator called");
+        yield return new WaitForSeconds(_deathClip.length);
+        Destroy(gameObject);
     }
     #endregion
 }

@@ -585,7 +585,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5159760038420425647, guid: cac6f0b15e259fc4fa669ed5da8d09d3, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5159760038420425647, guid: cac6f0b15e259fc4fa669ed5da8d09d3, type: 3}
       propertyPath: m_moveRadius
@@ -885,7 +885,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5159760038420425647, guid: cac6f0b15e259fc4fa669ed5da8d09d3, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5159760038420425647, guid: cac6f0b15e259fc4fa669ed5da8d09d3, type: 3}
       propertyPath: m_moveRadius
@@ -2737,7 +2737,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5159760038420425647, guid: cac6f0b15e259fc4fa669ed5da8d09d3, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5159760038420425647, guid: cac6f0b15e259fc4fa669ed5da8d09d3, type: 3}
       propertyPath: m_moveRadius
@@ -4027,7 +4027,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5159760038420425647, guid: cac6f0b15e259fc4fa669ed5da8d09d3, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5159760038420425647, guid: cac6f0b15e259fc4fa669ed5da8d09d3, type: 3}
       propertyPath: m_moveRadius
