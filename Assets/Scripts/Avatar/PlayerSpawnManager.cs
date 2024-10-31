@@ -29,6 +29,9 @@ public class PlayerSpawnManager : MonoBehaviour
         {
             instance = this;
         }
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Start()
