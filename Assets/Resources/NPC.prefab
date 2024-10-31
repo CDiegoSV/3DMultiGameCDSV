@@ -17,6 +17,10 @@ PrefabInstance:
       value: Agent
       objectReference: {fileID: 0}
     - target: {fileID: 2734882268101388106, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
+      propertyPath: m_listGameObject.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2734882268101388106, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
       propertyPath: m_listGameObject.Array.data[1]
       value: 
       objectReference: {fileID: 0}
@@ -101,10 +105,13 @@ PrefabInstance:
     - {fileID: 1303307639440238277, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
     - {fileID: 5897888089109427494, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
     - {fileID: 7615665698052880653, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
+    - {fileID: 2734882268101388106, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
     m_RemovedGameObjects:
     - {fileID: 4842083191888011766, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
     - {fileID: 9095378629398940039, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
     - {fileID: 1888424238145345623, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
+    - {fileID: 4538103962502468578, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
+    - {fileID: 3488001394229805608, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 378706672094461231, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}

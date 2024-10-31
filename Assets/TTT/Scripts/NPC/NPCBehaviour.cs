@@ -36,15 +36,13 @@ public class NPCBehaviour : AvatarBehaviour
     {
         if (m_life == 0)
         {
-            Debug.Log("Muertoo");
+            Debug.Log(gameObject.name + " Muertoo");
             _photonView.RPC("OnLifein0", RpcTarget.AllBuffered);
-            //OnLifein0();
         }
-        //if (!m_agent.pathPending && m_agent.remainingDistance < 0.3f)
-        //{
-        //    MoveToRandomPosition();
-
-        //}
+        if (!m_agent.pathPending && m_agent.remainingDistance < 0.3f)
+        {
+            MoveToRandomPosition();
+        }
 
     }
 

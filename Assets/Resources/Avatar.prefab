@@ -183,6 +183,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_listGameObject:
   - {fileID: 3488001394229805608}
+  - {fileID: 4538103962502468578}
   m_listScripts: []
 --- !u!1 &1377758317092858589
 GameObject:
@@ -1043,6 +1044,9 @@ MonoBehaviour:
   - Type: 3
     SynchronizeType: 1
     Name: Velocity
+  - Type: 9
+    SynchronizeType: 0
+    Name: Death
   m_SynchronizeLayers:
   - SynchronizeType: 1
     LayerIndex: 0
