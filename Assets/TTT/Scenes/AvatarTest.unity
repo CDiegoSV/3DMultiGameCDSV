@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18827617, g: 0.19113809, b: 0.19109794, a: 1}
+  m_IndirectSpecularColor: {r: 0.1882762, g: 0.19113821, b: 0.19109797, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -773,6 +773,7 @@ GameObject:
   m_Component:
   - component: {fileID: 355060124}
   - component: {fileID: 355060123}
+  - component: {fileID: 355060125}
   m_Layer: 0
   m_Name: AvatarSpawn
   m_TagString: Untagged
@@ -819,6 +820,28 @@ Transform:
   - {fileID: 1125964555}
   m_Father: {fileID: 1423171270}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &355060125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355060122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 6
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &369245078
 PrefabInstance:
   m_ObjectHideFlags: 0

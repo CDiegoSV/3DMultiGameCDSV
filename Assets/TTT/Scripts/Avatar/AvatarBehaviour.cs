@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
@@ -38,10 +39,21 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
 
     [SerializeField] protected int m_life;
 
+
     #endregion
 
     #region Unity Methods
 
+
+    private void OnEnable()
+    {
+        PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
+    }
+
+    private void OnDisable()
+    {
+        PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
+    }
 
     private void Start()
     {
@@ -88,6 +100,11 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
     public virtual void GettingDamage()
     {
         m_life--;
+    }
+
+    public void GetNewGameplayRole()
+    {
+
     }
    
     #endregion
@@ -141,6 +158,18 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(_deathClip.length);
         Destroy(gameObject);
     }
+
+    private void OnEvent(EventData photonEvent)
+    {
+        byte eventCode = photonEvent.Code;
+        if(eventCode == 1)
+        {
+            string data = (string)photonEvent.CustomData;
+            GetNewGameplayRole();
+        }
+    }
+
+
 
     #endregion
 }

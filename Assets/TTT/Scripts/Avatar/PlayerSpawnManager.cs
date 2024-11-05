@@ -36,6 +36,8 @@ public class PlayerSpawnManager : MonoBehaviour
 
     private void Start()
     {
+        myPV = GetComponent<PhotonView>();
+
         if (LevelNetworkManager.Instance?.getCurrentPlayerCount > 0)
         {
             spawnTransform = spawnPositions[(int)LevelNetworkManager.Instance?.getCurrentPlayerCount - 1];
@@ -47,6 +49,11 @@ public class PlayerSpawnManager : MonoBehaviour
         GameObject playerInstance = PhotonNetwork.Instantiate("Avatar", spawnTransform.position, Quaternion.identity);
         playerInstance.GetComponentInChildren<TextMeshProUGUI>().text = PhotonNetwork.NickName;
         playerInstance.transform.parent = playersParentGameObject.transform;
+
+        if(myPV.IsMine)
+        {
+            GameObject lvlManager = PhotonNetwork.Instantiate("LvlManager", spawnTransform.position, Quaternion.identity);
+        }
     }
 
     #endregion
