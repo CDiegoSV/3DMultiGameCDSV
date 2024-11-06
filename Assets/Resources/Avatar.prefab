@@ -61,6 +61,7 @@ MonoBehaviour:
   _animator: {fileID: 9149777995831268772}
   _deathClip: {fileID: 7400000, guid: 506ff7550b5114a6aa6d9a3396ff8e95, type: 2}
   _particleSystem: {fileID: 2791143848890418984}
+  _roleIndicator: {fileID: 0}
   m_life: 1
 --- !u!136 &826966045106223441
 CapsuleCollider:

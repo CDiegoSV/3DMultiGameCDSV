@@ -7,6 +7,10 @@ using ExitGames.Client.Photon;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using System.Linq;
 
+
+/// <summary>
+/// Manages all level events, roles, win or lose conditions.
+/// </summary>
 public class LevelManager : MonoBehaviourPunCallbacks
 {
     public static LevelManager instance;
@@ -52,8 +56,8 @@ public class LevelManager : MonoBehaviourPunCallbacks
     /// </summary>
     void Playing()
     {
-        setNewRoleEvent();
         AssignRole();
+        setNewRoleEvent();
     }
 
     private void Start()
@@ -65,16 +69,6 @@ public class LevelManager : MonoBehaviourPunCallbacks
         {
 
         }
-    }
-
-    private void OnEnable()
-    {
-        PhotonNetwork.AddCallbackTarget(this);
-    }
-
-    private void OnDisable()
-    {
-        PhotonNetwork.RemoveCallbackTarget(this);
     }
 
     public LevelManagerState GetCurrentState
@@ -100,7 +94,7 @@ public class LevelManager : MonoBehaviourPunCallbacks
     }
 
     //Falta asignar cuántos roles hay según el jugador
-    public static void AssignRole()
+    void AssignRole()
     {
         print("Asignación de rol");
         Player[] m_playersArray = PhotonNetwork.PlayerList;
@@ -120,9 +114,16 @@ public class LevelManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount >= 4)
         {
-            SetLevelManagerState(LevelManagerState.Playing);
+            StartCoroutine(CreateAndSendEventTimerCorutine());
         }
     }
+
+    IEnumerator CreateAndSendEventTimerCorutine()
+    {
+        yield return new WaitForSeconds(3f);
+        SetLevelManagerState(LevelManagerState.Playing);
+    }
+
 }
 
 public enum LevelManagerState

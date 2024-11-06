@@ -5,12 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 
 
 
-public class AvatarBehaviour : MonoBehaviourPunCallbacks
+public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
 {
     #region Knobs
     [Header("Avatar Knobs")]
@@ -27,6 +28,8 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
     [SerializeField] protected AnimationClip _deathClip;
     protected Cinemachine.CinemachineFreeLook _cam;
     [SerializeField] protected ParticleSystem _particleSystem;
+
+    [SerializeField] protected Image _roleIndicator;
     //[SerializeField] protected GameObject _hitCollider;
 
 
@@ -47,12 +50,12 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
 
     private void OnEnable()
     {
-        PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
+        PhotonNetwork.AddCallbackTarget(this);
     }
 
     private void OnDisable()
     {
-        PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
+        PhotonNetwork.RemoveCallbackTarget(this);
     }
 
     private void Start()
@@ -64,6 +67,7 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
     {
         if (_photonView.IsMine)
         {
+            PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
             avatarDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxis("Vertical")).normalized;
             _animator.SetInteger("Velocity", (int)avatarDirection.magnitude);
         }
@@ -88,6 +92,7 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
         if (_photonView.IsMine && (other.CompareTag("Agent") || other.CompareTag("Player") ) && Input.GetKeyDown(KeyCode.Mouse0))
         {
             Debug.Log("Kill Agent Input Detection");
+            _animator.SetTrigger("Attack");
             other.gameObject.GetComponent<AvatarBehaviour>().GettingDamage();
         }
         
@@ -104,9 +109,25 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
 
     public void GetNewGameplayRole()
     {
+        print("ASKJDAKDJBNAKSJKAJKJASDKJ");
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Role", out object role))
+        {
+            string m_newPlayerRole = role.ToString();
+            print("El rol es: " + m_newPlayerRole);
 
+            switch (m_newPlayerRole)
+            {
+                case "Innocent":
+                    //Soy inocente
+                    _roleIndicator.color = Color.blue;
+                    break;
+                case "Traitor":
+                    //Soy una sucia rata
+                    _roleIndicator.color = Color.red;
+                    break;
+            }
+        }
     }
-   
     #endregion
 
     #region Local Methods
@@ -159,15 +180,24 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks
         Destroy(gameObject);
     }
 
-    private void OnEvent(EventData photonEvent)
+    public void OnEvent(EventData photonEvent)
     {
         byte eventCode = photonEvent.Code;
+
+        switch (eventCode)
+        {
+            case 1:
+                GetNewGameplayRole();
+                break;
+        }
+
         if(eventCode == 1)
         {
-            string data = (string)photonEvent.CustomData;
-            GetNewGameplayRole();
+            
         }
     }
+
+
 
 
 
