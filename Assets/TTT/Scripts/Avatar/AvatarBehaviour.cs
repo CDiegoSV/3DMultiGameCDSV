@@ -29,8 +29,7 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     protected Cinemachine.CinemachineFreeLook _cam;
     [SerializeField] protected ParticleSystem _particleSystem;
 
-    [SerializeField] protected Image _roleIndicator;
-    //[SerializeField] protected GameObject _hitCollider;
+    [SerializeField] private SpriteRenderer _roleIndicator;
 
 
     #endregion
@@ -107,7 +106,7 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
         m_life--;
     }
 
-    public void GetNewGameplayRole()
+    private void GetNewGameplayRole()
     {
         print("ASKJDAKDJBNAKSJKAJKJASDKJ");
         if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Role", out object role))
@@ -115,16 +114,19 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
             string m_newPlayerRole = role.ToString();
             print("El rol es: " + m_newPlayerRole);
 
-            switch (m_newPlayerRole)
+            if(_roleIndicator != null)
             {
-                case "Innocent":
-                    //Soy inocente
-                    _roleIndicator.color = Color.blue;
-                    break;
-                case "Traitor":
-                    //Soy una sucia rata
-                    _roleIndicator.color = Color.red;
-                    break;
+                switch (m_newPlayerRole)
+                {
+                    case "Innocent":
+                        //Soy inocente
+                        _roleIndicator.color = Color.blue;
+                        break;
+                    case "Traitor":
+                        //Soy una sucia rata
+                        _roleIndicator.color = Color.red;
+                        break;
+                }
             }
         }
     }
@@ -144,7 +146,10 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
             _cam = GameObject.FindFirstObjectByType<Cinemachine.CinemachineFreeLook>();
             _cam.Follow = transform;
             _cam.LookAt = transform;
+            print("daiusdiuads");
+            _roleIndicator.color = Color.magenta;
         }
+
     }
 
     private void AvatarRBMove()

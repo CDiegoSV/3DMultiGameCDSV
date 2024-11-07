@@ -47,7 +47,6 @@ public class PlayerSpawnManager : MonoBehaviour
             spawnTransform = spawnPositions[0];
         }
         GameObject playerInstance = PhotonNetwork.Instantiate("Avatar", spawnTransform.position, Quaternion.identity);
-        playerInstance.GetComponentInChildren<TextMeshProUGUI>().text = PhotonNetwork.NickName;
         playerInstance.transform.parent = playersParentGameObject.transform;
 
         if(myPV.IsMine)
