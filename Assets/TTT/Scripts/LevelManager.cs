@@ -11,6 +11,9 @@ public class LevelManager : MonoBehaviourPunCallbacks
 {
     public static LevelManager instance;
 
+
+    [SerializeField] int m_traitorCount;
+
     PhotonView m_photonView;
     LevelManagerState m_currentState;
 
@@ -31,6 +34,11 @@ public class LevelManager : MonoBehaviourPunCallbacks
         m_photonView = GetComponent<PhotonView>();
 
         setLevelManagerSate(LevelManagerState.Waiting);
+
+        if(PhotonNetwork.IsMasterClient)
+        {
+            print("Masteeeeeer");
+        }
     }
     /// <summary>
     /// Levanta el Evento cuando los jugadores esten listos para la partida
@@ -83,15 +91,28 @@ public class LevelManager : MonoBehaviourPunCallbacks
     {
         print("Se crea Hastable con la asignacion del nuevo rol");
         Player[] m_playersArray = PhotonNetwork.PlayerList;
-        GameplayRole[] m_gameplayRole = { GameplayRole.Innocent, GameplayRole.Traitor };
+        List<GameplayRole> m_gameplayRoleList = new List<GameplayRole>();
 
-        m_gameplayRole = m_gameplayRole.OrderBy(x => Random.value).ToArray();
+        //m_gameplayRole = m_gameplayRole.OrderBy(x => Random.value).ToArray();
+
+        if(m_playersArray.Length <= 4)
+        {
+            m_gameplayRoleList.Add(GameplayRole.Traitor);
+            for(int i = m_gameplayRoleList.Count;  i < m_playersArray.Length; i++)
+            {
+                m_gameplayRoleList.Add(GameplayRole.Innocent);
+            }
+        }
 
         for (int i = 0; i < m_playersArray.Length; i++)
         {
-            Hashtable m_playerProperties = new Hashtable();
-            m_playerProperties["Role"] = m_gameplayRole[i % m_gameplayRole.Length].ToString();
 
+            int index = Random.Range(0, m_gameplayRoleList.Count);
+            Hashtable m_playerProperties = new Hashtable();
+
+            //m_playerProperties["Role"] = m_gameplayRole[i % m_gameplayRole.Length].ToString();
+            m_playerProperties["Role"] = m_gameplayRoleList[index].ToString();
+            m_gameplayRoleList.RemoveAt(index);
             m_playersArray[i].SetCustomProperties(m_playerProperties);
         }
     }

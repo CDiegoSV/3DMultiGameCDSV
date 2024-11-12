@@ -46,13 +46,14 @@ public class PlayerSpawnManager : MonoBehaviour
         {
             spawnTransform = spawnPositions[0];
         }
+
+        //if (myPV.IsMine)
+        //{
+        //    GameObject lvlManager = PhotonNetwork.Instantiate("LvlManager", spawnTransform.position, Quaternion.identity);
+        //}
+
         GameObject playerInstance = PhotonNetwork.Instantiate("Avatar", spawnTransform.position, Quaternion.identity);
         playerInstance.transform.parent = playersParentGameObject.transform;
-
-        if(myPV.IsMine)
-        {
-            GameObject lvlManager = PhotonNetwork.Instantiate("LvlManager", spawnTransform.position, Quaternion.identity);
-        }
     }
 
     #endregion
