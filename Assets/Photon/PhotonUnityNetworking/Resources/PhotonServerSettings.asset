@@ -42,6 +42,7 @@ MonoBehaviour:
   - DamageOtherPlayer
   - OnLifein0
   - SetTraitorBool
+  - StartFisinishingCorutine
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

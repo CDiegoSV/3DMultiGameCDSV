@@ -11,6 +11,8 @@ public class LevelManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
     public static LevelManager instance;
 
+    [SerializeField] int m_traitorPercent;
+
 
     [SerializeField] int m_innocentsAlive;
     [SerializeField] int m_traitorsAlive;
@@ -93,41 +95,58 @@ public class LevelManager : MonoBehaviourPunCallbacks, IOnEventCallback
     /// </summary>
     void starting()
     {
-        assignRole();
+        assignRoles();
         setNewRoleEvent();
     }
 
+
     //Falta asignar cuantos roles hay segun la cantidad de jugadores
-    void assignRole()
+    void assignRoles()
     {
         print("Se crea Hastable con la asignacion del nuevo rol");
         Player[] m_playersArray = PhotonNetwork.PlayerList;
         List<GameplayRole> m_gameplayRoleList = new List<GameplayRole>();
+        int totalPlayers = m_playersArray.Length;
 
-        //m_gameplayRole = m_gameplayRole.OrderBy(x => Random.value).ToArray();
+        int traitorCount = Mathf.Max(1, Mathf.RoundToInt(totalPlayers * m_traitorPercent));
+        int innocentCount = totalPlayers - traitorCount;
 
-        if(m_playersArray.Length <= 4)
-        {
-            m_gameplayRoleList.Add(GameplayRole.Traitor);
-            m_traitorsAlive++;
-            for(int i = m_gameplayRoleList.Count;  i < m_playersArray.Length; i++)
-            {
-                m_gameplayRoleList.Add(GameplayRole.Innocent);
-                m_innocentsAlive++;
-            }
-        }
+        m_traitorsAlive = traitorCount;
+        m_innocentsAlive = innocentCount;
+
+        m_gameplayRoleList.AddRange(Enumerable.Repeat(GameplayRole.Traitor, traitorCount));
+        m_gameplayRoleList.AddRange(Enumerable.Repeat(GameplayRole.Innocent, innocentCount));
+
+        ShuffleRoleList(m_gameplayRoleList);
 
         for (int i = 0; i < m_playersArray.Length; i++)
         {
-
-            int index = Random.Range(0, m_gameplayRoleList.Count);
             Hashtable m_playerProperties = new Hashtable();
 
-            //m_playerProperties["Role"] = m_gameplayRole[i % m_gameplayRole.Length].ToString();
-            m_playerProperties["Role"] = m_gameplayRoleList[index].ToString();
-            m_gameplayRoleList.RemoveAt(index);
+            m_playerProperties["Role"] = m_gameplayRoleList[i].ToString();
             m_playersArray[i].SetCustomProperties(m_playerProperties);
         }
+    }
+
+    void ShuffleRoleList(List<GameplayRole> p_rolesList)
+    {
+        for (int i = p_rolesList.Count - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            GameplayRole temp_role = p_rolesList[i];
+            p_rolesList[i] = p_rolesList[j];
+            p_rolesList[j] = temp_role;
+        }
+    }
+
+    IEnumerator FinishingGameCoroutine(string p_text, Color p_textColor)
+    {
+        UIManager.Instance.ChangeWinPanelTextNColor(p_text, p_textColor);
+        UIManager.Instance.ActivateWinPanel();
+
+        yield return new WaitForSeconds(4f);
+
+        //Go to MainMenu
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -158,6 +177,7 @@ public class LevelManager : MonoBehaviourPunCallbacks, IOnEventCallback
                     if (m_traitorsAlive == 0)
                     {
                         print("Inocentes Ganan");
+                        m_photonView.RPC("StartFisinishingCorutine", RpcTarget.All, false);
                         setLevelManagerState(LevelManagerState.Finishing);
                     }
                     StartCoroutine(CanReceiveEventsCooldown());
@@ -174,6 +194,7 @@ public class LevelManager : MonoBehaviourPunCallbacks, IOnEventCallback
                     if (m_innocentsAlive == 0)
                     {
                         print("Traidores Ganan");
+                        m_photonView.RPC("StartFisinishingCorutine", RpcTarget.All, true);
                         setLevelManagerState(LevelManagerState.Finishing);
                     }
                     StartCoroutine(CanReceiveEventsCooldown());
@@ -181,13 +202,25 @@ public class LevelManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 break;
         }
     }
-
-
+    
     IEnumerator CanReceiveEventsCooldown()
     {
         m_canReceiveEvents = false;
         yield return new WaitForSeconds(2f);
         m_canReceiveEvents = true;
+    }
+
+    [PunRPC]
+    private void StartFisinishingCorutine(bool p_traitorWin)
+    {
+        if(p_traitorWin == false)
+        {
+            StartCoroutine(FinishingGameCoroutine("Innocents Win", Color.blue));
+        }
+        else
+        {
+            StartCoroutine(FinishingGameCoroutine("Traitors Win", Color.red));
+        }
     }
 
     //private void OnEnable() {

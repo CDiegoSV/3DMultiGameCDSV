@@ -701,6 +701,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: (fast) Circle half rotating fading 4
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: f67329ea334785f45b1b11887d14b3ec, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22400000, guid: f67329ea334785f45b1b11887d14b3ec, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -156
+      objectReference: {fileID: 0}
     - target: {fileID: 22400002, guid: f67329ea334785f45b1b11887d14b3ec, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2887,8 +2895,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4076863487
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0.9490196}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
