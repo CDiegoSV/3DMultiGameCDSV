@@ -63,6 +63,7 @@ MonoBehaviour:
   _particleSystem: {fileID: 2791143848890418984}
   _roleIndicator: {fileID: 4739987812377494266}
   m_life: 1
+  m_imTraitor: 0
 --- !u!136 &826966045106223441
 CapsuleCollider:
   m_ObjectHideFlags: 0

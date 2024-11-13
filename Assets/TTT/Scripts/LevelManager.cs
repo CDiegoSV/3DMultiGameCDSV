@@ -7,15 +7,18 @@ using ExitGames.Client.Photon;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using System.Linq;
 
-public class LevelManager : MonoBehaviourPunCallbacks
+public class LevelManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
     public static LevelManager instance;
 
 
-    [SerializeField] int m_traitorCount;
+    [SerializeField] int m_innocentsAlive;
+    [SerializeField] int m_traitorsAlive;
 
     PhotonView m_photonView;
     LevelManagerState m_currentState;
+
+    bool m_canReceiveEvents;
 
     private void Awake()
     {
@@ -33,12 +36,13 @@ public class LevelManager : MonoBehaviourPunCallbacks
     {
         m_photonView = GetComponent<PhotonView>();
 
-        setLevelManagerSate(LevelManagerState.Waiting);
+        setLevelManagerState(LevelManagerState.Waiting);
 
         if(PhotonNetwork.IsMasterClient)
         {
             print("Masteeeeeer");
         }
+        m_canReceiveEvents = true;
     }
     /// <summary>
     /// Levanta el Evento cuando los jugadores esten listos para la partida
@@ -57,7 +61,7 @@ public class LevelManager : MonoBehaviourPunCallbacks
         return m_currentState;
     }
 
-    public void setLevelManagerSate(LevelManagerState p_newState)
+    public void setLevelManagerState(LevelManagerState p_newState)
     {
         if (p_newState == m_currentState)
         {
@@ -71,8 +75,15 @@ public class LevelManager : MonoBehaviourPunCallbacks
                 break;
             case LevelManagerState.Waiting:
                 break;
+
+            case LevelManagerState.Starting:
+                starting();
+                break;
+
             case LevelManagerState.Playing:
-                playing();
+                break;
+
+            case LevelManagerState.Finishing:
                 break;
         }
 
@@ -80,7 +91,7 @@ public class LevelManager : MonoBehaviourPunCallbacks
     /// <summary>
     /// Inicializa el estado de Playing
     /// </summary>
-    void playing()
+    void starting()
     {
         assignRole();
         setNewRoleEvent();
@@ -98,9 +109,11 @@ public class LevelManager : MonoBehaviourPunCallbacks
         if(m_playersArray.Length <= 4)
         {
             m_gameplayRoleList.Add(GameplayRole.Traitor);
+            m_traitorsAlive++;
             for(int i = m_gameplayRoleList.Count;  i < m_playersArray.Length; i++)
             {
                 m_gameplayRoleList.Add(GameplayRole.Innocent);
+                m_innocentsAlive++;
             }
         }
 
@@ -129,7 +142,52 @@ public class LevelManager : MonoBehaviourPunCallbacks
     IEnumerator timerToStart()
     {
         yield return new WaitForSeconds(3);
-        setLevelManagerSate(LevelManagerState.Playing);
+        setLevelManagerState(LevelManagerState.Starting);
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        switch (photonEvent.Code)
+        {
+            case 2: //A Traitor Died
+                if(m_traitorsAlive > 0 && m_canReceiveEvents == true)
+                {
+                    m_traitorsAlive--;
+                    Debug.Log(gameObject.name + "A Traitor Died " + m_photonView.Owner.NickName);
+
+                    if (m_traitorsAlive == 0)
+                    {
+                        print("Inocentes Ganan");
+                        setLevelManagerState(LevelManagerState.Finishing);
+                    }
+                    StartCoroutine(CanReceiveEventsCooldown());
+                }
+
+                break;
+
+            case 3: //A Innocent Died
+                if(m_innocentsAlive > 0 && m_canReceiveEvents == true)
+                {
+                    m_innocentsAlive--;
+                    Debug.Log(gameObject.name + " A Innocent Died " + m_photonView.Owner.NickName);
+
+                    if (m_innocentsAlive == 0)
+                    {
+                        print("Traidores Ganan");
+                        setLevelManagerState(LevelManagerState.Finishing);
+                    }
+                    StartCoroutine(CanReceiveEventsCooldown());
+                }
+                break;
+        }
+    }
+
+
+    IEnumerator CanReceiveEventsCooldown()
+    {
+        m_canReceiveEvents = false;
+        yield return new WaitForSeconds(2f);
+        m_canReceiveEvents = true;
     }
 
     //private void OnEnable() {
@@ -155,7 +213,9 @@ public enum LevelManagerState
 {
     None,
     Waiting,
-    Playing
+    Starting,
+    Playing,
+    Finishing
 }
 
 

@@ -41,6 +41,7 @@ MonoBehaviour:
   - RespawnSpaceship
   - DamageOtherPlayer
   - OnLifein0
+  - SetTraitorBool
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

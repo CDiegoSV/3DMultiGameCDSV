@@ -41,7 +41,8 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
 
     [SerializeField] protected int m_life;
 
-
+    protected bool m_roleReady;
+    [SerializeField] protected bool m_imTraitor;
     #endregion
 
     #region Unity Methods
@@ -108,8 +109,7 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
 
     private void GetNewGameplayRole()
     {
-        print("ASKJDAKDJBNAKSJKAJKJASDKJ");
-        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Role", out object role))
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Role", out object role) && m_roleReady == false)
         {
             string m_newPlayerRole = role.ToString();
             print("El rol es: " + m_newPlayerRole);
@@ -121,13 +121,18 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
                     case "Innocent":
                         //Soy inocente
                         _roleIndicator.color = Color.blue;
+                        _photonView.RPC("SetTraitorBool", RpcTarget.AllBuffered, false);
+                        Debug.Log("Soy Traidor?: " + m_imTraitor);
                         break;
                     case "Traitor":
                         //Soy una sucia rata
                         _roleIndicator.color = Color.red;
+                        _photonView.RPC("SetTraitorBool", RpcTarget.AllBuffered, true);
+                        Debug.Log("Soy Traidor?: " + m_imTraitor);
                         break;
                 }
             }
+            m_roleReady = true;
         }
     }
     #endregion
@@ -146,8 +151,7 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
             _cam = GameObject.FindFirstObjectByType<Cinemachine.CinemachineFreeLook>();
             _cam.Follow = transform;
             _cam.LookAt = transform;
-            print("daiusdiuads");
-            _roleIndicator.color = Color.magenta;
+            m_roleReady = false;
         }
 
     }
@@ -177,12 +181,47 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
         StartCoroutine(DeathCorutine());
     }
 
+    [PunRPC]
+    private void SetTraitorBool(bool value)
+    {
+        m_imTraitor = value;
+    }
+
     protected virtual IEnumerator DeathCorutine()
     {
         _particleSystem.Play();
-        Debug.Log("Inside Coroutine, animator called");
         yield return new WaitForSeconds(_deathClip.length);
+        if(m_imTraitor == true)
+        {
+            TraitorDiedEvent();
+        }
+        else
+        {
+            InnocentDiedEvent();
+        }
         Destroy(gameObject);
+    }
+
+
+    
+
+
+    void TraitorDiedEvent()
+    {
+        byte m_ID = 2;
+        object content = "Un traidor ha muerto.";
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient };
+
+        PhotonNetwork.RaiseEvent(m_ID, content, raiseEventOptions, SendOptions.SendReliable);
+    }
+    
+    void InnocentDiedEvent()
+    {
+        byte m_ID = 3;
+        object content = "Un inocente ha muerto.";
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient };
+
+        PhotonNetwork.RaiseEvent(m_ID, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
     public void OnEvent(EventData photonEvent)
