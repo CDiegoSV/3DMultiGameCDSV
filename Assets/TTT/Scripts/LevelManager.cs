@@ -146,7 +146,9 @@ public class LevelManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
         yield return new WaitForSeconds(4f);
 
-        //Go to MainMenu
+
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LoadLevel(0);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
