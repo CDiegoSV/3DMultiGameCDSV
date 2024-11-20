@@ -40,11 +40,10 @@ public class LevelManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
         setLevelManagerState(LevelManagerState.Waiting);
 
-        if(PhotonNetwork.IsMasterClient)
-        {
-            print("Masteeeeeer");
-        }
         m_canReceiveEvents = true;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
     /// <summary>
     /// Levanta el Evento cuando los jugadores esten listos para la partida
@@ -146,7 +145,8 @@ public class LevelManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
         yield return new WaitForSeconds(4f);
 
-
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         PhotonNetwork.LeaveRoom();
         PhotonNetwork.LoadLevel(0);
     }

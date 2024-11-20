@@ -36,13 +36,16 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
 
     #region Runtime Variables
 
-    protected Vector3 avatarDirection;
-    protected Quaternion avatarRotation;
 
     [SerializeField] protected int m_life;
 
     protected bool m_roleReady;
     [SerializeField] protected bool m_imTraitor;
+    private Vector3 _inputDirection;
+    private Transform _mainCameraTransform;
+
+    public float movementSpeed = 5f;
+    public float rotationSpeed = 10f;
     #endregion
 
     #region Unity Methods
@@ -68,16 +71,16 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
         if (_photonView.IsMine)
         {
             PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
-            avatarDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxis("Vertical")).normalized;
-            _animator.SetInteger("Velocity", (int)avatarDirection.magnitude);
+            _animator.SetInteger("Velocity", (int)_inputDirection.magnitude);
         }
     }
 
     private void FixedUpdate()
     {
-        if (_photonView.IsMine && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
+        if (_photonView.IsMine)
         {
             AvatarRBMove();
+
         }
         if (m_life == 0)
         {
@@ -141,10 +144,6 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
 
     private void InitializeAvatar()
     {
-        if (!_photonView.IsMine)
-        {
-            //gameObject.GetComponentInChildren<TextMeshProUGUI>().text = _photonView.Owner.NickName;
-        }
         if(_photonView.IsMine) 
         {
             m_life = 1;
@@ -152,17 +151,34 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
             _cam.Follow = transform;
             _cam.LookAt = transform;
             m_roleReady = false;
+            _mainCameraTransform = Camera.main.transform;
         }
-
     }
 
     private void AvatarRBMove()
     {
-        if (avatarDirection.magnitude > 0 )
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        _inputDirection = new Vector3(horizontal, 0f, vertical).normalized;
+
+        if (_inputDirection.magnitude >= 0.1f)
         {
-            avatarRotation = Quaternion.LookRotation(avatarDirection);
+            Vector3 cameraForward = _mainCameraTransform.forward;
+            Vector3 cameraRight = _mainCameraTransform.right;
+
+            cameraForward.y = 0f;
+            cameraRight.y = 0f;
+            cameraForward.Normalize();
+            cameraRight.Normalize();
+
+            Vector3 moveDirection = cameraForward * _inputDirection.z + cameraRight * _inputDirection.x;
+
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+
+            _rigidBody.MovePosition(_rigidBody.position + moveDirection * movementSpeed * Time.fixedDeltaTime);
         }
-        _rigidBody.Move(_rigidBody.position +  m_speed * Time.fixedDeltaTime * avatarDirection, Quaternion.Euler(0, avatarRotation.eulerAngles.y, 0));
     }
 
     private void DamageOtherPlayer(AvatarBehaviour otherPlayer)
@@ -177,7 +193,6 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     protected virtual void OnLifein0()
     {
         m_life--;
-        _animator.SetTrigger("Death");
         StartCoroutine(DeathCorutine());
     }
 
@@ -190,6 +205,8 @@ public class AvatarBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     protected virtual IEnumerator DeathCorutine()
     {
         _particleSystem.Play();
+        _animator.SetTrigger("Death");
+
         yield return new WaitForSeconds(_deathClip.length);
         if(m_imTraitor == true)
         {

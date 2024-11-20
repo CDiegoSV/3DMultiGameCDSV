@@ -45,7 +45,7 @@ public class PhotonConnection : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         print("Entro a Room: " + PhotonNetwork.CurrentRoom.Name);
-        PhotonNetwork.LoadLevel("AvatarTest");
+        PhotonNetwork.LoadLevel(1);
         //PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
     }
 

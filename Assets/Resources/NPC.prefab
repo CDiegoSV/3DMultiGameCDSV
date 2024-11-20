@@ -128,6 +128,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -10
       objectReference: {fileID: 0}
+    - target: {fileID: 3554451119797142179, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3554451119797142179, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[2].Name
+      value: Attack
+      objectReference: {fileID: 0}
+    - target: {fileID: 3554451119797142179, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[2].Type
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 6167642152607346958, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
       propertyPath: ObservedComponents.Array.size
       value: 2
@@ -187,7 +199,7 @@ PrefabInstance:
     - target: {fileID: 8020184426428725731, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 291a858486aeb8744b39eecde74a1407, type: 2}
+      objectReference: {fileID: 2100000, guid: 91ed578d42837f24685a6b792e43a1ed, type: 2}
     m_RemovedComponents:
     - {fileID: 8512493584323745435, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
     - {fileID: 1303307639440238277, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
@@ -261,9 +273,12 @@ MonoBehaviour:
   _photonView: {fileID: 770763509658705962}
   _animator: {fileID: 2440698197197046912}
   _deathClip: {fileID: 7400000, guid: 506ff7550b5114a6aa6d9a3396ff8e95, type: 2}
-  _particleSystem: {fileID: 8762230275557676556}
+  _particleSystem: {fileID: 7060585165810277857}
   _roleIndicator: {fileID: 6499034550608768761}
   m_life: 1
+  m_imTraitor: 0
+  movementSpeed: 5
+  rotationSpeed: 10
   m_agent: {fileID: 2548023297138656756}
   m_moveRadius: 3
 --- !u!195 &2548023297138656756
@@ -338,6 +353,11 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!198 &7060585165810277857 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4528840310543551685, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
+  m_PrefabInstance: {fileID: 6856044922486165796}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7959658235392627591 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3554451119797142179, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
@@ -349,8 +369,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!198 &8762230275557676556 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 2791143848890418984, guid: d058703cf79ee1e4db4fd5740cb550fd, type: 3}
-  m_PrefabInstance: {fileID: 6856044922486165796}
-  m_PrefabAsset: {fileID: 0}

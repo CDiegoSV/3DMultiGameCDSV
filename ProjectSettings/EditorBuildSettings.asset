@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/TTT/Scenes/Menu.unity
-    guid: 0dab13aa722452b4aaa4ae411a3773b8
+    path: Assets/TTT/Scenes/MenuScene.unity
+    guid: 785d07799bcf54e47b836199c1f5e871
   - enabled: 1
-    path: Assets/TTT/Scenes/AvatarTest.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    path: Assets/TTT/Scenes/GameScene.unity
+    guid: 167dca7c4e0ec274fb490f9397a58123
   m_configObjects: {}
